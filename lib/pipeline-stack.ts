@@ -20,7 +20,9 @@ export class PipelineStack extends cdk.Stack {
       }),
       primaryOutputDirectory: '.',
       commands: [
-        '. src/proxy/certs/certs.sh'
+        'cd src/proxy/certs',
+        'ls -la',
+        '. certs.sh'
       ]
     });
     const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
