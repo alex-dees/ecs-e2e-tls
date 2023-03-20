@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 set -x
 
 openssl genrsa -out castore.key 2048
