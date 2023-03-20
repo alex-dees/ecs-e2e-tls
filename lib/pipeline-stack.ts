@@ -14,11 +14,20 @@ class AppStage extends cdk.Stage {
 export class PipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+    const step = new pipelines.CodeBuildStep('Certs', {
+      input: pipelines.CodePipelineSource.connection('alex-dees/ecs-e2e-tls', 'main', {
+        connectionArn: 'arn:aws:codestar-connections:us-east-1:844540003076:connection/2f8ebd4e-dee4-4ebd-815b-8021abc56369'
+      }),
+      commands: [
+        '. src/proxy/certs/certs.sh'
+      ]
+    });
     const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
         synth: new pipelines.ShellStep('Synth', {
-          input: pipelines.CodePipelineSource.connection('alex-dees/ecs-e2e-tls', 'main', {
-            connectionArn: 'arn:aws:codestar-connections:us-east-1:844540003076:connection/2f8ebd4e-dee4-4ebd-815b-8021abc56369'
-          }),          
+          // input: pipelines.CodePipelineSource.connection('alex-dees/ecs-e2e-tls', 'main', {
+          //   connectionArn: 'arn:aws:codestar-connections:us-east-1:844540003076:connection/2f8ebd4e-dee4-4ebd-815b-8021abc56369'
+          // }),
+          input: step,          
           commands: [
             'npm ci',
             'npm run build',
@@ -26,14 +35,15 @@ export class PipelineStack extends cdk.Stack {
           ]
         })
     });
-    pipeline.addStage(new AppStage(this, 'App', { env: props?.env }), {
-      pre: [
-        new pipelines.ShellStep('Certs', {
-          commands: [
-            '. src/proxy/certs/certs.sh'
-          ]
-        })
-      ]
-    });
+    pipeline.addStage(new AppStage(this, 'App', { env: props?.env }));
+    // pipeline.addStage(new AppStage(this, 'App', { env: props?.env }), {
+    //   pre: [
+    //     new pipelines.ShellStep('Certs', {
+    //       commands: [
+    //         '. src/proxy/certs/certs.sh'
+    //       ]
+    //     })
+    //   ]
+    // });
   }
 }
