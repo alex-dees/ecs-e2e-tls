@@ -1,12 +1,13 @@
 FROM envoyproxy/envoy-dev:latest
 
-RUN apt-get update && apt-get -q install -y \
-    curl wget jq python \
-        python-pip \
-        python-setuptools \
-        groff \
-        less \
-        && pip --no-cache-dir install --upgrade awscli
+# RUN apt-get update && apt-get -q install -y \
+#     curl wget jq python \
+#         python-pip \
+#         python-setuptools \
+#         groff \
+#         less \
+#         && pip --no-cache-dir install --upgrade awscli
+
 RUN mkdir -p /etc/ssl
 ADD start_envoy.sh /start_envoy.sh
 ADD envoy.yaml /etc/envoy.yaml
