@@ -4,7 +4,6 @@ import { Construct } from 'constructs';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { E2ETlsStack } from './e2e-tls-stack';
 import * as pipelines from 'aws-cdk-lib/pipelines';
-import { BuildSpec } from 'aws-cdk-lib/aws-codebuild';
 
 class AppStage extends cdk.Stage {
   constructor(scope: Construct, id: string, props?: cdk.StageProps) {
@@ -22,17 +21,10 @@ export class PipelineStack extends cdk.Stack {
         connectionArn: 'arn:aws:codestar-connections:us-east-1:844540003076:connection/2f8ebd4e-dee4-4ebd-815b-8021abc56369'
       }),
       primaryOutputDirectory: '.',
-      // partialBuildSpec: BuildSpec.fromObject({
-      //   version: '0.2',
-      //   env: {
-      //     shell: 'bash'
-      //   }
-      // }),
       commands: [
         'cd src/proxy/certs',
         'chmod +x certs.sh',
-        './certs.sh',
-        //'ls -la',
+        './certs.sh'
       ],
       rolePolicyStatements: [
         new iam.PolicyStatement({
@@ -55,15 +47,8 @@ export class PipelineStack extends cdk.Stack {
           ]
         })
     });
+
     pipeline.addStage(new AppStage(this, 'App', { env: props?.env }));
-    // pipeline.addStage(new AppStage(this, 'App', { env: props?.env }), {
-    //   pre: [
-    //     new pipelines.ShellStep('Certs', {
-    //       commands: [
-    //         '. src/proxy/certs/certs.sh'
-    //       ]
-    //     })
-    //   ]
-    // });
+
   }
 }

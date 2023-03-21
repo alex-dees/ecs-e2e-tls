@@ -12,13 +12,13 @@ export class E2ETlsStack extends cdk.Stack {
     super(scope, id, props);
 
     //const vpc = new ec2.Vpc(this, 'Vpc');
-    //const repo = new ecr.Repository(this, 'Repo');
+
     const app = new DockerImageAsset(this, 'App', {
       directory: path.join(__dirname, '../src/app')
     });
-    // const proxy = new DockerImageAsset(this, 'Proxy', {
-    //   directory: 'src/proxy'
-    // });
+    const proxy = new DockerImageAsset(this, 'Proxy', {
+      directory: 'src/proxy'
+    });
     /*
     const service = new patterns
       .ApplicationLoadBalancedFargateService(
