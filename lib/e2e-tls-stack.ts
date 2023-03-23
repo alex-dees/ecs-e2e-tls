@@ -23,10 +23,10 @@ export class E2ETlsStack extends cdk.Stack {
     const proxy = new DockerImageAsset(this, 'Proxy', {
       directory: 'src/proxy'
     });
-   
+
     const cert = Certificate.fromCertificateArn(this, 'Cert',
       ssm.StringParameter.valueForStringParameter(this, 'cert-arn'));
-      
+
     const service = new ApplicationLoadBalancedFargateService(this, 'Service', {
       vpc,
       certificate: cert,
@@ -35,7 +35,6 @@ export class E2ETlsStack extends cdk.Stack {
       taskImageOptions: {
         containerPort: 443,
         image: ecs.ContainerImage.fromDockerImageAsset(proxy)
-        //image: ecs.ContainerImage.fromEcrRepository(repo, 'proxy')
       }
     });
     
@@ -49,7 +48,6 @@ export class E2ETlsStack extends cdk.Stack {
     const appDef = service.taskDefinition.addContainer('App', {
       image: ecs.ContainerImage.fromDockerImageAsset(app),
       logging: ecs.LogDriver.awsLogs({ streamPrefix: 'app' })
-      //image: ecs.ContainerImage.fromEcrRepository(repo, 'app')
     });
 
     appDef.addPortMappings({
