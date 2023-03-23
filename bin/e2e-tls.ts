@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-// import { E2ETlsStack } from '../lib/e2e-tls-stack';
+import { E2ETlsStack } from '../lib/e2e-tls-stack';
 import { PipelineStack } from '../lib/pipeline-stack';
 
 const app = new cdk.App();
