@@ -28,7 +28,7 @@ export class PipelineStack extends cdk.Stack {
       ],
       rolePolicyStatements: [
         new iam.PolicyStatement({
-          actions: ['acm:*'],
+          actions: ['acm:*', 'ssm:*'],
           resources: ['*']
         })
       ]
@@ -36,9 +36,6 @@ export class PipelineStack extends cdk.Stack {
 
     const pipeline = new pipelines.CodePipeline(this, 'Pipeline', {
         synth: new pipelines.ShellStep('Synth', {
-          // input: pipelines.CodePipelineSource.connection('alex-dees/ecs-e2e-tls', 'main', {
-          //   connectionArn: 'arn:aws:codestar-connections:us-east-1:844540003076:connection/2f8ebd4e-dee4-4ebd-815b-8021abc56369'
-          // }),
           input: step,          
           commands: [
             'npm ci',
